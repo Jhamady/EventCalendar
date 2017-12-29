@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<!-- Google Font: Lato -->
+<link href='css/latofont.css' rel='stylesheet' type='text/css'>
+<!-- FontAwesome -->
+<link rel="stylesheet" href="plugins/font-awesome/css/font-awesome.min.css">
+<!-- Nivo Lightbox-->
+<link rel="stylesheet" href="plugins/nivo-lightbox/nivo-lightbox.css" />
+<link rel="stylesheet" href="plugins/nivo-lightbox/themes/default/default.css" />
+
+<!-- Main CSS -->
+<link rel="stylesheet" href="css/main.css">
+<style>
+    ::-webkit-scrollbar {
+        width: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+        display: none;
+    }
+</style>
+
+<!--<link rel="stylesheet" href="assets/css/themes.dark.css">-->
+<!-- Custom CSS -->
+<!--<link rel="stylesheet" href="assets/css/custom.css">-->
+<!-- jQuery -->
+<script src="plugins/js/jquery.min.js"></script>
+<!-- dense.js (Retina plugin) -->
+<script src="plugins/js/dense.js"></script>
+<!-- Nivo Lightbox -->
+<script src="plugins/nivo-lightbox/nivo-lightbox.min.js"></script>
+<!-- ScrollReveal -->
+<script src="plugins/js/scrollreveal.min.js"></script>
+<!-- Main JS -->
+<script src="plugins/js/main.js"></script>
+<script>
+
+    var delay = 10000;
+
+    //Set Theme
+    document.write("<link rel='stylesheet' href='css/themes.black.css'>")
+
+    var TotalEventItems = 0;
+
+    function readTextFile() {
+        $.ajax({
+            url: "CalendarDATA.txt", success: function (result) {
+                var allText = result;
+
+                var lines = allText.split("\n");
+                TotalEventItems = lines.length;
+                for (var i = 0, len = lines.length; i < len; i++) {
+                    var feilds = lines[i].split("|");
+                    $('#EventPanel').append(FillEventDiv(i.toString(), feilds[0], feilds[1], feilds[2], feilds[3], feilds[4]));
+                }
+                $('#EventPanel').append('<div style=\"height:100px\"></div>');
+                Zoom('eventID' + 0, 0); 
+            }
+        });
+    }
+
+    function FillEventDiv(eventID, eventDate, everntDesc1, eventDesc2, eventLocation, eventDesc3) {
+
+        EventItem = '<div class=\"c-timeline__item\" id=\"eventID' + eventID + '\"> \
+        <div class=\"c-timeline__point  t-timeline__point  t-primary-bg\" ></div >\
+            <div class=\"o-content\" > \
+                <div class=\"o-grid\" >\
+                    <div class=\"o-grid__col-md-5\" style=\"zoom:1.9\">\
+                        <div id=\"eventDate' + eventID + '\" class=\"c-work__timeframe\">\
+                            ' + eventDate + '\
+                                                </div> \
+                        <h4 id=\"eventDesc1' + eventID + '\" class=\"c-work__title\"> \
+                            ' + everntDesc1 + ' \
+                                                </h4> \
+                        <div id=\"eventLocation' + eventID + '\" class=\"c-work__location\"> \
+                           <h4>Location:</h4> \
+                            ' + eventLocation + ' \
+                                                </div> \
+                    </div> \
+                    <div  id=\"eventDesc2' + eventID + '\" class=\"o-grid__col-md-7\"> \
+                                    <h3 id=\"everntDesc1' + eventID + '\" class=\"c-work__heading\"> \
+                            ' + eventDesc2 + '\
+                        </h3> \
+                        <p> \
+                            ' + eventDesc3 + '\
+                                                </p> \
+                    </div> \
+                                </div ><!-- /o-grid --> \
+                            </div ><!-- /o-content --> \
+                        </div ><!-- /c-timeline__item -->';
+
+        return EventItem;
+
+    }
+
+    function Zoom(name, id) {
+
+        $('#EventWindow').animate({
+            scrollTop: $('#' + name).height() * id
+        }, 1000);
+
+        $('#' + name).animate({ 'zoom': 2.3 }, 1000);
+        $('#' + name).delay(5000);
+        $('#' + name).animate({ 'zoom': 1 }, 1000);
+    }
+
+    $(document).ready(function () {
+        $('#EventWindow').height($(window).height() - 150);
+        readTextFile();
+        var i = 1;                     //  set your counter to 1
+
+        (function myLoop(i) {
+            setTimeout(function () {
+                if (i == TotalEventItems) {
+                    $("#EventPanel").empty();
+                    readTextFile();
+                    i = 1;
+                    myLoop(i);
+                    return false; 
+                }
+                Zoom('eventID' + i, i);       //  your code here
+                if (i < TotalEventItems) {
+                    i++;
+                    myLoop(i);
+                }
+            }, 9000)
+        })(1);
+    });
+
+</script>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <section class="o-section  t-section  ">
+        <!--<input type="button" id="button1"/><input type="button" onclick="Zoom('Event12');" /><input type="button" onclick="Zoom('Event3');" /><input type="button" onclick="Zoom('Event4');" />-->
+        <div class="o-section__header-bg  t-section__header" style="background: black;"></div>
+        <div class="o-section__content-bg  t-section__content" style="background: black;"></div>
+        <div class="o-container" style="margin: 10px; max-width:10000px">
+            <div class="o-section__container">
+                <header class="o-section__header  t-section__header" style="width: 18%;">
+                    <div class="o-content" style="zoom: 2.5">
+                        <h2 class="o-section__heading" style="text-align:center;color:red">
+                            DIAMOND HALL<br />
+                        </h2>
+                        <h5 style="text-align:center">EVENTS</h5>
+                        <img src="images/UnisexTshirtRoots.png" />
+                        <p>&nbsp;</p><p>&nbsp;</p>
+                        <h5 class="o-content__body  o-section__description" style="text-align:center">
+                            We always need volunteers.
+                        </h5>
+                        <h6 style="color:red;text-align:center">616.774.9612</h6>
+                    </div>
+                </header><!-- /o-section__header -->
+                <div id="EventWindow" class="o-section__content  t-section__content  u-pb-0" style="overflow-y: scroll;width: 80%;">
+
+                    <div id="EventPanel" class="a-experience-timeline  c-timeline  t-border-color in-view">
+
+                    </div><!-- /c-timeline -->
+                </div><!-- /o-section__content -->
+            </div><!-- /o-section__container -->
+        </div><!-- /o-container -->
+    </section>
+</body>
+</html>
